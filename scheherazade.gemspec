@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "scheherazade"
   gem.require_paths = ["lib"]
   gem.version       = Scheherazade::VERSION
+
+  gem.add_development_dependency "rspec"
 end
