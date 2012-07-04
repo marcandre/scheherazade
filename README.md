@@ -87,12 +87,6 @@ The main class is `Story` and there are 2 important methods: `Story#imagine` and
       fill Blog, :posts
     end
 
-## To do
-
-Configurable automatic attributes
-Finish doc
-Finish specs
-
 ## Why? Scheherazade vs FactoryGirl vs Machinist
 
 FactoryGirl and Machinist are DSLs to create ActiveRecord objects.
@@ -130,6 +124,26 @@ Add this line to your application's Gemfile:
 And then execute:
 
     $ bundle
+
+To avoid pollution from one test/spec to another, you should start and end a story before each. For example with Rspec:
+
+    RSpec.configure do |config|
+      config.before(:each) do
+        story.begin
+      end
+
+      config.after(:each) do
+        story.end
+      end
+
+Not sure if future versions should probably support that out of the box...?
+
+## To do
+
+Configurable automatic attributes
+Finish support for associations with integers/arrays
+Finish doc
+Finish specs
 
 ## Contributing
 
