@@ -3,7 +3,7 @@ module Scheherazade
     attr_reader :fill_attributes, :characters, :counter, :current
 
     def self.current
-      Thread.current[:scheherazade_stories].last
+      (Thread.current[:scheherazade_stories] ||= []).last || TOP
     end
 
     # Begins a story within the current story.
@@ -48,6 +48,8 @@ module Scheherazade
       @after_imagine = {}
       @built = []
     end
+
+    TOP = new(nil)
 
     # Creates a character with the given attributes
     #
@@ -142,6 +144,9 @@ module Scheherazade
       @after_imagine[current_fill] = block
     end
 
+    alias_method :==, :equal?
+    alias_method :eql?, :equal?
+
     protected
     def current_fill
       @filling.last or raise "Expected to be inside a story.fill"
@@ -165,5 +170,3 @@ module Scheherazade
 
   end
 end
-
-Scheherazade::Story.begin
