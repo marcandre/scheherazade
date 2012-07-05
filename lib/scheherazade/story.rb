@@ -17,8 +17,8 @@ module Scheherazade
     # Ends the current substory and comes back
     # to the previous current story
     #
-    def self.end(rollback = false)
-      current.send :rollback if rollback
+    def self.end(opts = nil)
+      current.send :rollback if opts && opts[:rollback]
       Thread.current[:scheherazade_stories].pop
       current
     end
@@ -28,7 +28,7 @@ module Scheherazade
     def self.tell(opts = nil)
       yield self.begin
     ensure
-      self.end(opts && opts[:rollback])
+      self.end(opts)
     end
 
     def initialize(parent = self.class.current)
