@@ -109,8 +109,8 @@ module Scheherazade
       self.class.begin
     end
 
-    def end
-      self.class.end
+    def end(opts = nil)
+      self.class.end(opts)
     end
 
     def tell(opts = nil)
