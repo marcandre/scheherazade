@@ -2,34 +2,37 @@ module Scheherazade
   class Story < Hash
     attr_reader :fill_attributes, :characters, :counter, :current
 
-    def self.current
-      (Thread.current[:scheherazade_stories] ||= []).last || TOP
-    end
+    module ClassMethods
+      def current
+        (Thread.current[:scheherazade_stories] ||= []).last || TOP
+      end
 
-    # Begins a story within the current story.
-    # Should be balanced with a call to +end+
-    #
-    def self.begin
-      (Thread.current[:scheherazade_stories] ||= []).push Story.new
-      current
-    end
+      # Begins a story within the current story.
+      # Should be balanced with a call to +end+
+      #
+      def begin
+        (Thread.current[:scheherazade_stories] ||= []).push Story.new
+        current
+      end
 
-    # Ends the current substory and comes back
-    # to the previous current story
-    #
-    def self.end(opts = nil)
-      current.send :rollback if opts && opts[:rollback]
-      Thread.current[:scheherazade_stories].pop
-      current
-    end
+      # Ends the current substory and comes back
+      # to the previous current story
+      #
+      def end(opts = nil)
+        current.send :rollback if opts && opts[:rollback]
+        Thread.current[:scheherazade_stories].pop
+        current
+      end
 
-    # Begins a substory, yields, and ends the story
-    #
-    def self.tell(opts = nil)
-      yield self.begin
-    ensure
-      self.end(opts)
+      # Begins a substory, yields, and ends the story
+      #
+      def tell(opts = nil)
+        yield self.begin
+      ensure
+        self.end(opts)
+      end
     end
+    extend ClassMethods
 
     def initialize(parent = self.class.current)
       super(){|h, k| parent[k] if parent }
