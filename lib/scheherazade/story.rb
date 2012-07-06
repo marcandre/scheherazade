@@ -147,7 +147,7 @@ module Scheherazade
       fill_attributes[char] = with
       @characters[char] = current_fill unless to_model(char)
       begin
-        @filling.push(character_or_model)
+        @filling.push(char)
         yield
       ensure
         @filling.pop

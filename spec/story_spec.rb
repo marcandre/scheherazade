@@ -59,6 +59,20 @@ describe Scheherazade::Story do
     end
   end
 
+  describe 'fill' do
+    context 'with additional fields to fill' do
+      before do
+        story.fill User, :state do
+          story.fill :montrealer, :city => 'Montreal'
+        end
+      end
+      it { User.imagine.state.should be_present }
+      it { User.imagine.city.should be_blank }
+      it { :montrealer.imagine.city.should == 'Montreal' }
+      it { :montrealer.imagine.state.should be_present }
+    end
+  end
+
   describe '==' do
     it 'is true only for the same story object' do
       story.should == story
