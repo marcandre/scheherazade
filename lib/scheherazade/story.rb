@@ -31,23 +31,43 @@ module Scheherazade
       ensure
         self.end(opts)
       end
+
+      def to_character(character_or_model)
+        case character_or_model
+        when Class
+          character_or_model.name.underscore.to_sym
+        when Symbol
+          character_or_model
+        else
+          raise ArgumentError, "expected character or Model, got #{character_or_model.ancestors}"
+        end
+      end
+
+      def to_character!(character_or_model)
+        to_character(character_or_model) unless character_or_model.is_a?(Symbol)
+      end
+
+      # Returns a Model or nil
+      def to_model(character)
+        character.to_s.camelize.safe_constantize
+      end
     end
     extend ClassMethods
-    delegate :begin, :end, :tell, :to => 'self.class'
+    delegate :begin, :end, :tell, :to_character, :to_character!, :to_model, :to => 'self.class'
 
 
     def initialize(parent = self.class.current)
       super(){|h, k| parent[k] if parent }
       @parent = parent
-      @current = Hash.new{|h, k| parent.current[k] if parent}
-      @fill_attributes = Hash.new{|h, k| parent.fill_attributes[k] if parent }
-      @characters = Hash.new do |h, k|
-        if parent
-          parent.characters[k]
-        elsif k.is_a?(Symbol)
-          k.to_s.camelize.constantize
+      @current = Hash.new do |h, k|
+        if (char = to_character!(k))
+          h[char]
+        else
+          parent.current[k] if parent
         end
       end
+      @fill_attributes = Hash.new{|h, k| parent.fill_attributes[k] if parent }
+      @characters = Hash.new {|h, k| parent.characters[k] if parent }
       @counter = parent ? parent.counter.dup : Hash.new(0)
       @filling = []
       @after_imagine = {}
@@ -89,7 +109,8 @@ module Scheherazade
     #    end
     #    story.current[User] # => nil
     #
-    def imagine(character, attributes = nil)
+    def imagine(character_or_model, attributes = nil)
+      character = to_character(character_or_model)
       prev, @building = @building, [] # because method might be re-entrant
       CharacterBuilder.new(character).build(attributes) do |ar|
         ar.save!
@@ -122,8 +143,9 @@ module Scheherazade
     end
 
     def fill(character_or_model, *with)
-      fill_attributes[character_or_model] = with
-      @characters[character_or_model] = current_fill if character_or_model.is_a? Symbol
+      char = to_character(character_or_model)
+      fill_attributes[char] = with
+      @characters[char] = current_fill unless to_model(char)
       begin
         @filling.push(character_or_model)
         yield

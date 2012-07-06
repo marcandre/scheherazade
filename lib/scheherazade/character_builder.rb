@@ -8,7 +8,7 @@ module Scheherazade
       while (c = story.characters[@chain.first])
         @chain.unshift c
       end
-      @model = @chain.first
+      @model = Story.to_model(@chain.first)
       story.send(:building) << @ar = @model.new
       @chain.each{|c| story.current[c] = @ar }
     end

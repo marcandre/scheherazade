@@ -66,4 +66,12 @@ describe Scheherazade::Story do
       Scheherazade::Story.new.should_not eql Scheherazade::Story.new
     end
   end
+
+  [[Page, :page], [:page, Page]].each do |char, equiv|
+    it "does not distinguish between #{char} and #{equiv}" do
+      p = story.imagine(char)
+      p.should == story.current[equiv]
+      p.should == story.get(equiv)
+      end
+  end
 end
