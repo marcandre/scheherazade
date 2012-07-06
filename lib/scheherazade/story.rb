@@ -33,6 +33,8 @@ module Scheherazade
       end
     end
     extend ClassMethods
+    delegate :begin, :end, :tell, :to => 'self.class'
+
 
     def initialize(parent = self.class.current)
       super(){|h, k| parent[k] if parent }
@@ -106,18 +108,6 @@ module Scheherazade
 
     def get(character)
       current[character] || imagine(character)
-    end
-
-    def begin
-      self.class.begin
-    end
-
-    def end(opts = nil)
-      self.class.end(opts)
-    end
-
-    def tell(opts = nil)
-      self.class.tell(opts){|story| yield story }
     end
 
     # Allows one to temporarily override the current characters while
