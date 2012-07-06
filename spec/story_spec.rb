@@ -73,6 +73,22 @@ describe Scheherazade::Story do
     end
   end
 
+  describe 'after_imagine' do
+    it "raises an error outside of a fill" do
+      expect{ story.after_imagine {} }.to raise_error
+    end
+
+    it "works inside a fill" do
+      called_on = []
+      story.fill User do
+        story.after_imagine {|c| called_on << c }
+        story.fill :montrealer
+      end
+      objects = [:user, User, :montrealer].map{|com| com.imagine}
+      called_on.should == objects
+    end
+  end
+
   describe '==' do
     it 'is true only for the same story object' do
       story.should == story

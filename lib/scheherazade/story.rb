@@ -155,8 +155,8 @@ module Scheherazade
     end
 
     def after_imagine(&block)
-      raise NotImplementedError if current_fill.is_a?(Symbol)
-      @after_imagine[current_fill] = block
+      raise NotImplementedError unless model = to_model(current_fill)
+      @after_imagine[model] = block
     end
 
     alias_method :==, :equal?
