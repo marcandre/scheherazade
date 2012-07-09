@@ -134,12 +134,13 @@ module Scheherazade
     # Allows one to temporarily override the current characters while
     # the given block executes
     #
-    def with(temp_current, &block)
-      old = current.slice(*temp_current.keys)
-      current.merge!(temp_current)
-      instance_eval(&block)
+    def with(temp_current)
+      keys = temp_current.keys.map{|k| to_character(k)}
+      previous_values = current.values_at(*keys)
+      current.merge!(Hash[keys.zip(temp_current.values)])
+      yield
     ensure
-      current.merge!(old)
+      current.merge!(Hash[keys.zip(previous_values)])
     end
 
     def fill(character_or_model, *with)

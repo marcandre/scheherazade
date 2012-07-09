@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    scheherazade (0.0.7)
+    scheherazade (0.0.8)
       rails (>= 3.0)
 
 GEM

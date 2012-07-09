@@ -89,6 +89,27 @@ describe Scheherazade::Story do
     end
   end
 
+  describe 'fill' do
+    it 'is a convenient way to set a different current object' do
+      p3, p2, p1 = 3.times.map{ Page.imagine }
+      story.current[Page].should == p1
+      story.tell do
+        story.current[Page].should == p1
+        story.with :page => p2 do
+          story.current[Page].should == p2
+          other = Page.imagine
+          story.current[Page].should == other
+          story.with :page => p3 do
+            story.current[Page].should == p3
+          end
+          story.current[Page].should == other
+        end
+        story.current[Page].should == p1
+      end
+      story.current[Page].should == p1
+    end
+  end
+
   describe '==' do
     it 'is true only for the same story object' do
       story.should == story
