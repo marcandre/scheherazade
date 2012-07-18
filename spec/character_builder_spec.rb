@@ -22,6 +22,7 @@ module Scheherazade
     it 'generates different values by default' do
       attributes = [:title, :dob, :zip, :phone, :email]
       users = 10.times.map{ CharacterBuilder.new(User).build(attributes) }
+      attributes << :created_at
       not_unique = attributes.select{|a| users.map(&a).uniq! }
       not_unique.should == []
     end

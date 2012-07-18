@@ -27,6 +27,7 @@ module Scheherazade
     def build(attribute_list = nil)
       @seq = (story.counter[@model] += 1)
       lists = [required_attributes, *default_attribute_lists, attribute_list]
+      lists.prepend [:created_at] if @ar.has_attribute?(:created_at)
       attribute_list = lists.map{|al| canonical(al)}.inject(:merge)
       log(:building, attribute_list)
       set_attributes(attribute_list)
