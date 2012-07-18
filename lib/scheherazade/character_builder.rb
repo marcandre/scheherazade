@@ -111,8 +111,8 @@ module Scheherazade
       when :integer  then @seq
       when :float    then @seq
       when :decimal  then "#{@seq}.99"
-      when :datetime then Time.now
-      when :date     then Date.today
+      when :datetime then Time.now - 1.day + @seq
+      when :date     then Date.today - 1.year + @seq
       when :string   then
         case attribute
         when :email

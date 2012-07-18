@@ -18,5 +18,12 @@ module Scheherazade
         CharacterBuilder.new(Page).build({}.freeze)
       }.should_not raise_error
     end
+
+    it 'generates different values by default' do
+      attributes = [:title, :dob, :zip, :phone, :email]
+      users = 10.times.map{ CharacterBuilder.new(User).build(attributes) }
+      not_unique = attributes.select{|a| users.map(&a).uniq! }
+      not_unique.should == []
+    end
   end
 end
