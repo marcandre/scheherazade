@@ -9,7 +9,7 @@ module Scheherazade
         @chain.unshift c
       end
       @model = Story.to_model(@chain.first)
-      story.send(:building) << @ar = @model.new
+      story.send :building, @ar = @model.new
       @chain.each{|c| story.current[c] = @ar }
     end
 

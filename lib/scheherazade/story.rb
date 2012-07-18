@@ -181,8 +181,8 @@ module Scheherazade
       @built.each(&:destroy)
     end
 
-    attr_reader :building
-    private :building
-
+    def building(ar)
+      @building << ar if @building # Condition needed in case we use CharacterBuilder outside of call to `imagine`
+    end
   end
 end
