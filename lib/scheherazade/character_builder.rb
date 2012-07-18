@@ -144,7 +144,7 @@ module Scheherazade
       when nil then {}
       when Hash then attribute_list
       when Array
-        attribute_list.map! do |attributes|
+        attribute_list.map do |attributes|
           case attributes
           when Symbol
             {attributes => AUTO}
@@ -154,7 +154,7 @@ module Scheherazade
             raise "Unexpected attributes #{attributes}"
           end
         end
-        attribute_list.inject({}, :merge)
+        .inject({}, :merge)
       else
         raise "Unexpected attribute_list #{attribute_list}"
       end

@@ -11,5 +11,12 @@ module Scheherazade
         post.comments.map(&:commentable).should == [post]
       end
     end
+
+    it 'keeps my arguments intact' do
+      lambda {
+        CharacterBuilder.new(Page).build([].freeze)
+        CharacterBuilder.new(Page).build({}.freeze)
+      }.should_not raise_error
+    end
   end
 end
