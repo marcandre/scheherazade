@@ -77,7 +77,8 @@ module Scheherazade
 
     def value_for_association(assoc, associated_character)
       log(:setting_assocation, associated_character)
-      opts = {assoc.active_record.name.underscore.to_sym => @ar} if [:has_many, :has_one].include? assoc.macro
+      key = assoc.options[:as] || assoc.active_record.name.underscore.to_sym
+      opts = {key => @ar} if [:has_many, :has_one].include? assoc.macro
       ar =  if associated_character.is_a?(Symbol)
               story.current[associated_character] || self.class.new(associated_character).build(opts)
             else
