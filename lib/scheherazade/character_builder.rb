@@ -9,6 +9,7 @@ module Scheherazade
         @chain.unshift c
       end
       @model = Story.to_model(@chain.first)
+      raise NameError, "Character not defined: #{@chain.first}" unless @model
       story.send :building, @ar = @model.new
       @chain.each{|c| story.current[c] = @ar }
     end

@@ -125,4 +125,8 @@ describe Scheherazade::Story do
       p.should == story.get(equiv)
       end
   end
+
+  describe 'imagine' do
+    it { expect { story.imagine :non_existing_character }.to raise_error(NameError, "Character not defined: non_existing_character")}
+  end
 end
