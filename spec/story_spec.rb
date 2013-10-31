@@ -60,16 +60,22 @@ describe Scheherazade::Story do
   end
 
   describe 'fill' do
-    context 'with additional fields to fill' do
-      before do
-        story.fill User, :state do
-          story.fill :montrealer, :city => 'Montreal'
-        end
+    before do
+      story.fill User, :state do
+        story.fill :montrealer, :city => 'Montreal'
       end
+    end
+    context 'with additional fields to fill' do
       it { User.imagine.state.should be_present }
       it { User.imagine.city.should be_blank }
       it { :montrealer.imagine.city.should == 'Montreal' }
       it { :montrealer.imagine.state.should be_present }
+    end
+
+    it "doesn't allows overriding a model" do
+      lambda {
+        story.fill User
+      }.should raise_error(Scheherazade::RedefinitionError)
     end
   end
 

@@ -1,4 +1,7 @@
 module Scheherazade
+  class RedefinitionError < Exception
+  end
+
   class Story < Hash
     attr_reader :fill_attributes, :characters, :counter, :current
 
@@ -145,6 +148,7 @@ module Scheherazade
 
     def fill(character_or_model, *with)
       char = to_character(character_or_model)
+      raise RedefinitionError, "#{char} already defined for this story" if fill_attributes.has_key? char
       fill_attributes[char] = with
       @characters[char] = current_fill unless to_model(char)
       begin
