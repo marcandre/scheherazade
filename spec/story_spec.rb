@@ -40,6 +40,18 @@ describe Scheherazade::Story do
       end
     end
 
+    it "won't affect modified and unsaved records" do
+      original = User.imagine
+      original.last_name = 'modified but not persisted'
+      story.tell do
+        inner = story.current[User]
+        inner.should == original
+        inner.last_name = 'modified in the inner story'
+      end
+      story.current[User].should equal original
+      original.last_name.should == 'modified but not persisted'
+    end
+
     it 'is thread-safe' do
       cur = story
       s = nil

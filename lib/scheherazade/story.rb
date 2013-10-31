@@ -3,7 +3,7 @@ module Scheherazade
   end
 
   class Story < Hash
-    attr_reader :fill_attributes, :characters, :counter, :current
+    attr_reader :fill_attributes, :characters, :counter, :current, :parent
 
     module ClassMethods
       def current
@@ -22,7 +22,7 @@ module Scheherazade
       # to the previous current story
       #
       def end(opts = nil)
-        current.send :rollback if opts && opts[:rollback]
+        current.send :rollback, opts && opts[:rollback]
         Thread.current[:scheherazade_stories].pop
         current
       end
@@ -62,13 +62,7 @@ module Scheherazade
     def initialize(parent = self.class.current)
       super(){|h, k| parent[k] if parent }
       @parent = parent
-      @current = Hash.new do |h, k|
-        if (char = to_character!(k))
-          h[char]
-        else
-          parent.current[k] if parent
-        end
-      end
+      @current = CurrentHash.new(self)
       @fill_attributes = Hash.new{|h, k| parent.fill_attributes[k] if parent }
       @characters = Hash.new {|h, k| parent.characters[k] if parent }
       @counter = parent ? parent.counter.dup : Hash.new(0)
@@ -181,8 +175,9 @@ module Scheherazade
       end
     end
 
-    def rollback
-      @built.each(&:destroy)
+    def rollback(hard)
+      current.restore
+      @built.each(&:destroy) if hard
     end
 
     def building(ar)

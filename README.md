@@ -24,8 +24,8 @@ Scheherazade
                               # with a default name,
                               # associated to a new Company
     story.imagine(Department) # creates another Department
-                            # with another name
-                            # and associated to the same Company
+                              # with another name
+                              # and associated to the same Company
 
 ## Features
 
