@@ -1,4 +1,4 @@
-# Scheherazade
+# Scheherazade [![Build Status](https://travis-ci.org/marcandre/backports.png?branch=master)](https://travis-ci.org/marcandre/scheherazade) [![Gem Version](https://badge.fury.io/rb/scheherazade.svg)](http://badge.fury.io/rb/scheherazade)
 
 With Sheherazade's imagination and storytelling skills, fixtures can be as entertaining as the "Arabian Nights".
 
