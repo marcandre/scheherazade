@@ -94,7 +94,7 @@ module Scheherazade
       when :has_one
         ar
       when :has_many
-        if ar && ar.persisted?
+        if ar.respond_to?(:persisted?) && ar.persisted?
           if ar.send(assoc.active_record.name.underscore) != @ar
             log :additional_character, assoc.name
             [self.class.new(associated_character).build(opts)]
