@@ -31,6 +31,14 @@ module Scheherazade
 
     protected
 
+    # Implementation note: the reason why we remember the object
+    # and then reset it, instead of attempting to clone it is
+    # that active record doesn't implement a meaningful clone
+    # and dup creates a different object altogether.
+    #
+    # Attempting to clone an AR object, including it's loaded relations
+    # would require playing too close to the metal and would be too brittle
+    #
     def remember(object)
       return object unless object
       ivs = object.instance_variables
