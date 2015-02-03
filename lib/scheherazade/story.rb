@@ -61,8 +61,16 @@ module Scheherazade
 
     def initialize(parent = self.class.current)
       super(){|h, k| parent[k] if parent }
+      @scribe = Scribe.new
       @parent = parent
-      @current = CurrentHash.new(self)
+      @current = Hash.new do |h, k|
+        if (char = to_character!(k))
+          h[char]
+        else
+          h[k] = borrow(parent.current[k]) if parent
+        end
+      end
+
       @fill_attributes = Hash.new{|h, k| parent.fill_attributes[k] if parent }
       @characters = Hash.new {|h, k| parent.characters[k] if parent }
       @counter = parent ? parent.counter.dup : Hash.new(0)
@@ -175,8 +183,13 @@ module Scheherazade
       end
     end
 
+    def borrow(ar_instance)
+      @scribe.memorize(ar_instance)
+      ar_instance
+    end
+
     def rollback(hard)
-      current.restore
+      @scribe.restore_all
       @built.each(&:destroy) if hard
     end
 

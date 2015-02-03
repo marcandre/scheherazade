@@ -71,6 +71,28 @@ describe Scheherazade::Story do
       end
       t.kill
     end
+
+    it "is doesn't affect the parent story (association loaded)" do
+      top_page = Page.imagine
+      top_page.sections.size.should == 0
+      story.tell :rollback => false do
+        page = story.get(Page)
+        page.sections.build
+        page.sections.size.should == 1
+      end
+      top_page.sections.size.should == 0
+    end
+
+    it "is doesn't affect the parent story (association not loaded)" do
+      page = Page.imagine
+      story.tell :rollback => true do
+        Section.imagine
+        page.sections.count.should == 1
+      end
+      Section.count.should == 0
+      page.sections.count.should == 0
+    end
+
   end
 
   describe 'fill' do
