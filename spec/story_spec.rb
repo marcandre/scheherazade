@@ -42,8 +42,9 @@ describe Scheherazade::Story do
       end
     end
 
-    it "won't affect modified and unsaved records" do
+    it "will reload modified and unsaved records" do
       original = User.imagine
+      original_name = original.last_name
       original.last_name = 'modified but not persisted'
       story.tell do
         inner = story.current[User]
@@ -51,7 +52,7 @@ describe Scheherazade::Story do
         inner.last_name = 'modified in the inner story'
       end
       story.current[User].should equal original
-      original.last_name.should == 'modified but not persisted'
+      original.last_name.should == original_name
     end
 
     it 'is thread-safe' do
@@ -71,6 +72,28 @@ describe Scheherazade::Story do
       end
       t.kill
     end
+
+    it "is doesn't affect the parent story (association loaded)" do
+      top_page = Page.imagine
+      top_page.sections.size.should == 0
+      story.tell :rollback => false do
+        page = story.get(Page)
+        page.sections.build
+        page.sections.size.should == 1
+      end
+      top_page.sections.size.should == 0
+    end
+
+    it "is doesn't affect the parent story (association not loaded)" do
+      page = Page.imagine
+      story.tell :rollback => true do
+        Section.imagine
+        page.sections.count.should == 1
+      end
+      Section.count.should == 0
+      page.sections.count.should == 0
+    end
+
   end
 
   describe 'fill' do
