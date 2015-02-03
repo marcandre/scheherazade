@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Scheherazade::Story do
+  around { |example| story.tell { example.run } }
+
   describe 'tell' do
     let(:tell) do
       story.tell(options) do

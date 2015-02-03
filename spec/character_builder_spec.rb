@@ -2,6 +2,8 @@ require 'spec_helper'
 
 module Scheherazade
   describe CharacterBuilder do
+    around { |example| story.tell { example.run } }
+
     it 'supports lambdas' do
     end
 

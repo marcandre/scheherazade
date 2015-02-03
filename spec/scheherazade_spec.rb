@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Scheherazade do
   context 'when creating a simple post' do
+    around { |example| story.tell { example.run } }
     let(:params) { {} }
     let(:post) { Section::Post.imagine(params) }
     subject { post }
