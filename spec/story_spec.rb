@@ -171,5 +171,9 @@ describe Scheherazade::Story do
 
   describe 'imagine' do
     it { expect { story.imagine :non_existing_character }.to raise_error(NameError, "Character not defined: non_existing_character")}
+
+    it "raises an error if assocation can't be saved" do
+      proc { story.imagine(Website::Castle) }.should raise_error(ActiveRecord::RecordInvalid)
+    end
   end
 end

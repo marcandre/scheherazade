@@ -121,8 +121,8 @@ module Scheherazade
         ar.save!
         # While errors on records associated with :has_many will prevent records
         # from being saved, they won't for :belongs_to, so:
-        @building.each do |ar|
-          ar.valid? and raise ActiveRecord::RecordInvalid, ar.errors unless ar.persisted?
+        @building.each do |built|
+          raise ActiveRecord::RecordInvalid, built unless built.persisted? || built.valid?
         end
         Scheherazade.log(:saving, character, ar)
         handle_callbacks(@building)
